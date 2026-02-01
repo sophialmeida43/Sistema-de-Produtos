@@ -174,7 +174,7 @@ function Produtos() {
                 </Card>
             ))}
 
-            {/* Modal para quantidade */}
+
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Adicionar ao Orçamento</Modal.Title>
