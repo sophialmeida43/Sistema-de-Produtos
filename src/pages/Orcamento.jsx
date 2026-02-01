@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Container, Table, Button } from "react-bootstrap";
+import { Container, Table, Button, Form } from "react-bootstrap";
 
 function Orcamento() {
     const [itens, setItens] = useState([]);
     const [editandoId, setEditandoId] = useState(null);
-    const [novaQuantidade, setNovaQuantidade] = useState(1);
+    const [quantidades, setQuantidades] = useState({}); // Para cada item
     const [cliente, setCliente] = useState("");
 
     // Carrega itens e cliente do localStorage
@@ -14,6 +14,11 @@ function Orcamento() {
 
         const dadosCliente = localStorage.getItem("cliente") || "";
         setCliente(dadosCliente);
+
+        // Inicializa quantidades para cada item
+        const qts = {};
+        dados.forEach(item => qts[item.id] = item.quantidade);
+        setQuantidades(qts);
     }, []);
 
     // Salva cliente no localStorage sempre que muda
@@ -23,14 +28,11 @@ function Orcamento() {
 
     function editarQuantidade(item) {
         setEditandoId(item.id);
-        setNovaQuantidade(item.quantidade);
     }
 
     function salvarQuantidade(id) {
-        const novaLista = itens.map((item) =>
-            item.id === id
-                ? { ...item, quantidade: Number(novaQuantidade) }
-                : item
+        const novaLista = itens.map(item =>
+            item.id === id ? { ...item, quantidade: Number(quantidades[id]) } : item
         );
         setItens(novaLista);
         localStorage.setItem("orcamento", JSON.stringify(novaLista));
@@ -38,7 +40,7 @@ function Orcamento() {
     }
 
     function removerItem(id) {
-        const novaLista = itens.filter((item) => item.id !== id);
+        const novaLista = itens.filter(item => item.id !== id);
         setItens(novaLista);
         localStorage.setItem("orcamento", JSON.stringify(novaLista));
     }
@@ -54,31 +56,30 @@ function Orcamento() {
         localStorage.removeItem("cliente");
         setItens([]);
         setCliente("");
+        setQuantidades({});
     }
 
     return (
         <Container className="mt-5">
             <h2 className="text-center mb-4">Simulação de Orçamento</h2>
 
+            {/* Input do cliente sempre visível */}
+            <div className="mb-4 no-print">
+                <Form.Label>Nome do cliente</Form.Label>
+                <Form.Control
+                    type="text"
+                    placeholder="Ex: Maria Silva"
+                    value={cliente}
+                    onChange={(e) => setCliente(e.target.value)}
+                />
+            </div>
+
             {itens.length === 0 ? (
                 <p className="text-center">Nenhum item no orçamento</p>
             ) : (
                 <>
-                    <div className="mb-4 no-print">
-                        <label className="form-label">Nome do cliente</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Ex: Maria Silva"
-                            value={cliente}
-                            onChange={(e) => setCliente(e.target.value)}
-                        />
-                    </div>
-
                     {cliente && (
-                        <p className="text-center fw-bold">
-                            Cliente: {cliente}
-                        </p>
+                        <p className="text-center fw-bold">Cliente: {cliente}</p>
                     )}
 
                     <Table striped bordered hover>
@@ -92,7 +93,7 @@ function Orcamento() {
                             </tr>
                         </thead>
                         <tbody>
-                            {itens.map((item) => (
+                            {itens.map(item => (
                                 <tr key={item.id}>
                                     <td>{item.nome}</td>
                                     <td>
@@ -100,9 +101,12 @@ function Orcamento() {
                                             <input
                                                 type="number"
                                                 min="1"
-                                                value={novaQuantidade}
+                                                value={quantidades[item.id]}
                                                 onChange={(e) =>
-                                                    setNovaQuantidade(e.target.value)
+                                                    setQuantidades({
+                                                        ...quantidades,
+                                                        [item.id]: e.target.value
+                                                    })
                                                 }
                                                 style={{ width: "70px" }}
                                                 className="no-print"
@@ -112,9 +116,7 @@ function Orcamento() {
                                         )}
                                     </td>
                                     <td>R$ {Number(item.preco).toFixed(2)}</td>
-                                    <td>
-                                        R$ {(Number(item.preco) * Number(item.quantidade)).toFixed(2)}
-                                    </td>
+                                    <td>R$ {(Number(item.preco) * Number(item.quantidade)).toFixed(2)}</td>
                                     <td className="no-print">
                                         {editandoId === item.id ? (
                                             <Button
@@ -151,10 +153,7 @@ function Orcamento() {
                     <h4 className="text-end">Total: R$ {total.toFixed(2)}</h4>
 
                     <div className="text-end mt-3 no-print">
-                        <Button
-                            variant="secondary"
-                            onClick={() => window.print()}
-                        >
+                        <Button variant="secondary" onClick={() => window.print()}>
                             Gerar Orçamento
                         </Button>
                     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Container, Card, Button, Form, Badge } from "react-bootstrap";
+import { Container, Card, Button, Form, Badge, Modal } from "react-bootstrap";
 
 function Produtos() {
     const [produtos, setProdutos] = useState([]);
@@ -11,6 +11,11 @@ function Produtos() {
         descricao: "",
         estoque: false,
     });
+
+    // Modal
+    const [showModal, setShowModal] = useState(false);
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
+    const [quantidadeModal, setQuantidadeModal] = useState(1);
 
     useEffect(() => {
         const dados = JSON.parse(localStorage.getItem("produtos")) || [];
@@ -43,6 +48,41 @@ function Produtos() {
         setEditandoId(null);
     }
 
+    // Abre o modal de quantidade
+    function abrirModal(produto) {
+        setProdutoSelecionado(produto);
+        setQuantidadeModal(1);
+        setShowModal(true);
+    }
+
+    // Adiciona ao orçamento
+    function adicionarAoOrcamentoModal() {
+        const quantidade = Number(quantidadeModal);
+        if (!quantidade || quantidade <= 0) return;
+
+        const orcamentoAtual = JSON.parse(localStorage.getItem("orcamento")) || [];
+        const index = orcamentoAtual.findIndex((item) => item.id === produtoSelecionado.id);
+
+        if (index >= 0) {
+            orcamentoAtual[index] = {
+                ...orcamentoAtual[index],
+                quantidade: orcamentoAtual[index].quantidade + quantidade
+            };
+        } else {
+            orcamentoAtual.push({
+                id: produtoSelecionado.id,
+                nome: produtoSelecionado.nome,
+                preco: produtoSelecionado.preco,
+                quantidade
+            });
+        }
+
+        localStorage.setItem("orcamento", JSON.stringify(orcamentoAtual));
+        window.dispatchEvent(new Event("storage")); // atualiza Orcamento.jsx
+        setShowModal(false);
+        alert("Produto adicionado ao orçamento!");
+    }
+
     return (
         <Container className="mt-4">
             <h2 className="text-center mb-4">Produtos</h2>
@@ -62,6 +102,7 @@ function Produtos() {
                     <Card.Body>
                         {editandoId === produto.id ? (
                             <>
+                                {/* Form de edição */}
                                 <Form.Group className="mb-2">
                                     <Form.Label>Nome</Form.Label>
                                     <Form.Control
@@ -90,10 +131,7 @@ function Produtos() {
                                         rows={2}
                                         value={formEdicao.descricao}
                                         onChange={(e) =>
-                                            setFormEdicao({
-                                                ...formEdicao,
-                                                descricao: e.target.value,
-                                            })
+                                            setFormEdicao({ ...formEdicao, descricao: e.target.value })
                                         }
                                     />
                                 </Form.Group>
@@ -114,100 +152,47 @@ function Produtos() {
                                     </Form.Select>
                                 </Form.Group>
 
-
-                                <Button
-                                    variant="success"
-                                    className="me-2"
-                                    onClick={() => salvarEdicao(produto.id)}
-                                >
-                                    Salvar
-                                </Button>
-
-                                <Button
-                                    variant="secondary"
-                                    onClick={() => setEditandoId(null)}
-                                >
-                                    Cancelar
-                                </Button>
+                                <Button variant="success" className="me-2" onClick={() => salvarEdicao(produto.id)}>Salvar</Button>
+                                <Button variant="secondary" onClick={() => setEditandoId(null)}>Cancelar</Button>
                             </>
                         ) : (
                             <>
                                 <Card.Title>{produto.nome}</Card.Title>
-
-                                <Card.Text>
-                                    <strong>Preço:</strong> R$ {produto.preco}
-                                </Card.Text>
-
+                                <Card.Text><strong>Preço:</strong> R$ {produto.preco}</Card.Text>
                                 <Card.Text>{produto.descricao}</Card.Text>
-
                                 <Card.Text>
                                     <strong>Status:</strong>{" "}
-                                    {produto.estoque ? (
-                                        <Badge bg="success">Disponível</Badge>
-                                    ) : (
-                                        <Badge bg="danger">Indisponível</Badge>
-                                    )}
+                                    {produto.estoque ? <Badge bg="success">Disponível</Badge> : <Badge bg="danger">Indisponível</Badge>}
                                 </Card.Text>
 
-                                <Button
-                                    variant="primary"
-                                    className="me-2"
-                                    onClick={() => iniciarEdicao(produto)}
-                                >
-                                    Editar
-                                </Button>
-
-                                <Button
-                                    variant="danger"
-                                    className="me-2"
-                                    onClick={() => excluirProduto(produto.id)}
-                                >
-                                    Excluir
-                                </Button>
-
-                                <Button
-                                    variant="warning"
-                                    className="me-2"
-                                    onClick={() => adicionarAoOrcamento(produto)}
-                                >
-                                    Adicionar Orçamento
-                                </Button>
-
+                                <Button variant="primary" className="me-2" onClick={() => iniciarEdicao(produto)}>Editar</Button>
+                                <Button variant="danger" className="me-2" onClick={() => excluirProduto(produto.id)}>Excluir</Button>
+                                <Button variant="warning" className="me-2" onClick={() => abrirModal(produto)}>Adicionar Orçamento</Button>
                             </>
                         )}
                     </Card.Body>
                 </Card>
             ))}
+
+            {/* Modal para quantidade */}
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Adicionar ao Orçamento</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Produto: <strong>{produtoSelecionado?.nome}</strong></p>
+                    <Form.Group>
+                        <Form.Label>Quantidade:</Form.Label>
+                        <Form.Control type="number" min="1" value={quantidadeModal} onChange={(e) => setQuantidadeModal(e.target.value)} />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+                    <Button variant="success" onClick={adicionarAoOrcamentoModal}>Adicionar</Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 }
-
-function adicionarAoOrcamento(produto) {
-    const quantidade = Number(prompt("Quantidade desejada:"));
-    if (!quantidade || quantidade <= 0) return;
-
-    const orcamentoAtual = JSON.parse(localStorage.getItem("orcamento")) || [];
-    const index = orcamentoAtual.findIndex((item) => item.id === produto.id);
-
-    if (index >= 0) {
-        orcamentoAtual[index] = {
-            ...orcamentoAtual[index],
-            quantidade: orcamentoAtual[index].quantidade + quantidade
-        };
-    } else {
-        orcamentoAtual.push({
-            id: produto.id,
-            nome: produto.nome,
-            preco: produto.preco,
-            quantidade
-        });
-    }
-
-    localStorage.setItem("orcamento", JSON.stringify(orcamentoAtual));
-    window.dispatchEvent(new Event("storage"));
-    alert("Produto adicionado ao orçamento!");
-}
-
-
 
 export default Produtos;
