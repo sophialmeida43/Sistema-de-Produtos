@@ -102,7 +102,7 @@ function Produtos() {
                     <Card.Body>
                         {editandoId === produto.id ? (
                             <>
-
+                                {/* Form de edição */}
                                 <Form.Group className="mb-2">
                                     <Form.Label>Nome</Form.Label>
                                     <Form.Control
@@ -174,7 +174,7 @@ function Produtos() {
                 </Card>
             ))}
 
-
+            {/* Modal para quantidade */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Adicionar ao Orçamento</Modal.Title>
