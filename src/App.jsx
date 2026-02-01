@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter, Routes, Route, Link } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
 
 import Cadastro from "./pages/Cadastro";
@@ -8,7 +8,7 @@ import Sobre from "./pages/Sobre";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       {/* NAVBAR – só design */}
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -33,7 +33,7 @@ function App() {
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/orcamento" element={<Orcamento />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
