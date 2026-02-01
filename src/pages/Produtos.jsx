@@ -102,7 +102,7 @@ function Produtos() {
                     <Card.Body>
                         {editandoId === produto.id ? (
                             <>
-                                {/* Form de edição */}
+
                                 <Form.Group className="mb-2">
                                     <Form.Label>Nome</Form.Label>
                                     <Form.Control

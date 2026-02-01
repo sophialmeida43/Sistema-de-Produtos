@@ -4,7 +4,7 @@ import { Container, Table, Button, Form } from "react-bootstrap";
 function Orcamento() {
     const [itens, setItens] = useState([]);
     const [editandoId, setEditandoId] = useState(null);
-    const [quantidades, setQuantidades] = useState({}); // Para cada item
+    const [quantidades, setQuantidades] = useState({});
     const [cliente, setCliente] = useState("");
 
     // Carrega itens e cliente do localStorage
