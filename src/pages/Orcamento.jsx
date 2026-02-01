@@ -101,16 +101,17 @@ function Orcamento() {
                                             <input
                                                 type="number"
                                                 min="1"
-                                                value={quantidades[item.id]}
+                                                value={quantidades[item.id] || 0}  // garante valor definido
                                                 onChange={(e) =>
                                                     setQuantidades({
                                                         ...quantidades,
-                                                        [item.id]: e.target.value
+                                                        [item.id]: Number(e.target.value) // converte para number
                                                     })
                                                 }
                                                 style={{ width: "70px" }}
                                                 className="no-print"
                                             />
+
                                         ) : (
                                             item.quantidade
                                         )}
