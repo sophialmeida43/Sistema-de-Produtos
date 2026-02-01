@@ -7,6 +7,20 @@ function Orcamento() {
     const [novaQuantidade, setNovaQuantidade] = useState(1);
     const [cliente, setCliente] = useState("");
 
+    // Carrega itens e cliente do localStorage
+    useEffect(() => {
+        const dados = JSON.parse(localStorage.getItem("orcamento")) || [];
+        setItens(dados);
+
+        const dadosCliente = localStorage.getItem("cliente") || "";
+        setCliente(dadosCliente);
+    }, []);
+
+    // Salva cliente no localStorage sempre que muda
+    useEffect(() => {
+        localStorage.setItem("cliente", cliente);
+    }, [cliente]);
+
     function editarQuantidade(item) {
         setEditandoId(item.id);
         setNovaQuantidade(item.quantidade);
@@ -18,16 +32,10 @@ function Orcamento() {
                 ? { ...item, quantidade: Number(novaQuantidade) }
                 : item
         );
-
         setItens(novaLista);
         localStorage.setItem("orcamento", JSON.stringify(novaLista));
         setEditandoId(null);
     }
-
-    useEffect(() => {
-        const dados = JSON.parse(localStorage.getItem("orcamento")) || [];
-        setItens(dados);
-    }, []);
 
     function removerItem(id) {
         const novaLista = itens.filter((item) => item.id !== id);
@@ -36,14 +44,16 @@ function Orcamento() {
     }
 
     const total = itens.reduce(
-        (soma, item) => soma + item.preco * item.quantidade,
+        (soma, item) => soma + Number(item.preco) * Number(item.quantidade),
         0
     );
 
     function finalizarOrcamento() {
         alert("Orçamento gerado com sucesso!");
         localStorage.removeItem("orcamento");
+        localStorage.removeItem("cliente");
         setItens([]);
+        setCliente("");
     }
 
     return (
@@ -71,7 +81,6 @@ function Orcamento() {
                         </p>
                     )}
 
-
                     <Table striped bordered hover>
                         <thead>
                             <tr>
@@ -86,14 +95,15 @@ function Orcamento() {
                             {itens.map((item) => (
                                 <tr key={item.id}>
                                     <td>{item.nome}</td>
-
                                     <td>
                                         {editandoId === item.id ? (
                                             <input
                                                 type="number"
                                                 min="1"
                                                 value={novaQuantidade}
-                                                onChange={(e) => setNovaQuantidade(e.target.value)}
+                                                onChange={(e) =>
+                                                    setNovaQuantidade(e.target.value)
+                                                }
                                                 style={{ width: "70px" }}
                                                 className="no-print"
                                             />
@@ -101,13 +111,10 @@ function Orcamento() {
                                             item.quantidade
                                         )}
                                     </td>
-
                                     <td>R$ {Number(item.preco).toFixed(2)}</td>
-
                                     <td>
-                                        R$ {(Number(item.preco) * item.quantidade).toFixed(2)}
+                                        R$ {(Number(item.preco) * Number(item.quantidade)).toFixed(2)}
                                     </td>
-
                                     <td className="no-print">
                                         {editandoId === item.id ? (
                                             <Button
@@ -128,7 +135,6 @@ function Orcamento() {
                                                 Editar
                                             </Button>
                                         )}
-
                                         <Button
                                             variant="danger"
                                             size="sm"
@@ -140,7 +146,6 @@ function Orcamento() {
                                 </tr>
                             ))}
                         </tbody>
-
                     </Table>
 
                     <h4 className="text-end">Total: R$ {total.toFixed(2)}</h4>
@@ -153,7 +158,6 @@ function Orcamento() {
                             Gerar Orçamento
                         </Button>
                     </div>
-
                 </>
             )}
         </Container>

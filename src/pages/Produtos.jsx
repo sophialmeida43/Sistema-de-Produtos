@@ -184,30 +184,30 @@ function Produtos() {
 
 function adicionarAoOrcamento(produto) {
     const quantidade = Number(prompt("Quantidade desejada:"));
-
     if (!quantidade || quantidade <= 0) return;
 
-    const orcamentoAtual =
-        JSON.parse(localStorage.getItem("orcamento")) || [];
+    const orcamentoAtual = JSON.parse(localStorage.getItem("orcamento")) || [];
+    const index = orcamentoAtual.findIndex((item) => item.id === produto.id);
 
-    const itemExistente = orcamentoAtual.find(
-        (item) => item.id === produto.id
-    );
-
-    if (itemExistente) {
-        itemExistente.quantidade += quantidade;
+    if (index >= 0) {
+        orcamentoAtual[index] = {
+            ...orcamentoAtual[index],
+            quantidade: orcamentoAtual[index].quantidade + quantidade
+        };
     } else {
         orcamentoAtual.push({
             id: produto.id,
             nome: produto.nome,
             preco: produto.preco,
-            quantidade,
+            quantidade
         });
     }
 
     localStorage.setItem("orcamento", JSON.stringify(orcamentoAtual));
+    window.dispatchEvent(new Event("storage"));
     alert("Produto adicionado ao orçamento!");
 }
+
 
 
 export default Produtos;
