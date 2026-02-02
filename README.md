@@ -21,7 +21,7 @@ Sistema de gerenciamento de produtos desenvolvido com React + Vite, utilizando R
 - Dados salvos no LocalStorage (sem backend)
 
 # 🎯 Objetivo do Projeto
-Criar um sistema de gerenciamento de produtos voltado para pequenas e grandes empresas, incluindo MEIs, facilitando o controle de produtos, preços e orçamento de forma simples e eficiente.
+Criar um sistema de gerenciamento de produtos voltado para pequenas e grandes empresas, facilitando o controle de produtos, preços e orçamento de forma simples e eficiente.
 
 # 🌐 Demonstração
 🔗 Acesse o projeto: https://sophialmeida43.github.io/Sistema-de-Produtos/#/
