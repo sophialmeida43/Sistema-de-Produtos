@@ -4,10 +4,10 @@ import { Container, Table, Button, Form } from "react-bootstrap";
 function Orcamento() {
     const [itens, setItens] = useState([]);
     const [editandoId, setEditandoId] = useState(null);
-    const [quantidades, setQuantidades] = useState({});
+    const [quantidades, setQuantidades] = useState({}); // Para cada item
     const [cliente, setCliente] = useState("");
 
-    // Carrega itens e cliente
+    // Carrega itens e cliente do localStorage
     useEffect(() => {
         const dados = JSON.parse(localStorage.getItem("orcamento")) || [];
         setItens(dados);
@@ -15,11 +15,13 @@ function Orcamento() {
         const dadosCliente = localStorage.getItem("cliente") || "";
         setCliente(dadosCliente);
 
+        // Inicializa quantidades para cada item
         const qts = {};
         dados.forEach(item => qts[item.id] = item.quantidade);
         setQuantidades(qts);
     }, []);
 
+    // Salva cliente no localStorage sempre que muda
     useEffect(() => {
         localStorage.setItem("cliente", cliente);
     }, [cliente]);
@@ -28,22 +30,10 @@ function Orcamento() {
         setEditandoId(item.id);
     }
 
-    // ✅ AGORA: só muda o valor digitado (não altera itens)
-    function alterarQuantidade(id, valor) {
-        setQuantidades({
-            ...quantidades,
-            [id]: valor
-        });
-    }
-
-    // ✅ ATUALIZA subtotal e total SOMENTE AO SALVAR
     function salvarQuantidade(id) {
         const novaLista = itens.map(item =>
-            item.id === id
-                ? { ...item, quantidade: Number(quantidades[id]) }
-                : item
+            item.id === id ? { ...item, quantidade: Number(quantidades[id]) } : item
         );
-
         setItens(novaLista);
         localStorage.setItem("orcamento", JSON.stringify(novaLista));
         setEditandoId(null);
@@ -60,10 +50,20 @@ function Orcamento() {
         0
     );
 
+    function finalizarOrcamento() {
+        alert("Orçamento gerado com sucesso!");
+        localStorage.removeItem("orcamento");
+        localStorage.removeItem("cliente");
+        setItens([]);
+        setCliente("");
+        setQuantidades({});
+    }
+
     return (
         <Container className="mt-5">
             <h2 className="text-center mb-4">Simulação de Orçamento</h2>
 
+            {/* Input do cliente sempre visível */}
             <div className="mb-4 no-print">
                 <Form.Label>Nome do cliente</Form.Label>
                 <Form.Control
@@ -89,7 +89,7 @@ function Orcamento() {
                                 <th>Quantidade</th>
                                 <th>Valor Unitário</th>
                                 <th>Subtotal</th>
-                                <th className="no-print">Ações</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,7 +103,10 @@ function Orcamento() {
                                                 min="1"
                                                 value={quantidades[item.id] ?? item.quantidade}
                                                 onChange={(e) =>
-                                                    alterarQuantidade(item.id, e.target.value)
+                                                    setQuantidades({
+                                                        ...quantidades,
+                                                        [item.id]: e.target.value
+                                                    })
                                                 }
                                                 style={{ width: "70px" }}
                                                 className="no-print"
@@ -113,31 +116,30 @@ function Orcamento() {
                                         )}
                                     </td>
                                     <td>R$ {Number(item.preco).toFixed(2)}</td>
-                                    <td>
-                                        R$ {(Number(item.preco) * Number(item.quantidade)).toFixed(2)}
-                                    </td>
+                                    <td>R$ {(Number(item.preco) * Number(item.quantidade)).toFixed(2)}</td>
                                     <td className="no-print">
                                         {editandoId === item.id ? (
                                             <Button
-                                                size="sm"
                                                 variant="success"
+                                                size="sm"
+                                                className="me-2"
                                                 onClick={() => salvarQuantidade(item.id)}
                                             >
                                                 Salvar
                                             </Button>
                                         ) : (
                                             <Button
-                                                size="sm"
                                                 variant="primary"
+                                                size="sm"
+                                                className="me-2"
                                                 onClick={() => editarQuantidade(item)}
                                             >
                                                 Editar
                                             </Button>
                                         )}
                                         <Button
-                                            size="sm"
                                             variant="danger"
-                                            className="ms-2"
+                                            size="sm"
                                             onClick={() => removerItem(item.id)}
                                         >
                                             Remover
