@@ -1,16 +1,27 @@
-# React + Vite
+# 📈 Sistema de Produtos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 📌 Sobre o Projeto
+Sistema de gerenciamento de produtos desenvolvido com React + Vite, permitindo cadastrar produtos, definir preços e quantidades e calcular o orçamento total de forma dinâmica.Sendo ideal para trabalha conceitos fundamentais do desenvolvimento frontend moderno, como componentização, estado, props, renderização condicional e organização de projeto.
 
-Currently, two official plugins are available:
+# 🚀 Funcionalidades
+- Cadastro, edição e exclusão de produtos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Listagem de produtos com status (disponível/indisponível)
 
-## React Compiler
+- Adição de produtos ao orçamento
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Edição de quantidade no orçamento
 
-## Expanding the ESLint configuration
+- Cálculo automático de subtotal e total
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Campo para nome do cliente
+
+- Geração e impressão do orçamento
+
+- Dados salvos no LocalStorage (sem backend)
+
+# 🎯 Objetivo do Projeto
+Criar um sistema de gerenciamento de produtos voltado para pequenas e grandes empresas, incluindo MEIs, facilitando o controle de produtos, preços e orçamento de forma simples e eficiente.
+
+# 🌐 Demonstração
+🔗 Acesse o projeto: 
