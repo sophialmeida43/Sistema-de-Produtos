@@ -1,7 +1,7 @@
 # 📈 Sistema de Produtos
 
 # 📌 Sobre o Projeto
-Sistema de gerenciamento de produtos desenvolvido com React + Vite, permitindo cadastrar produtos, definir preços e quantidades e calcular o orçamento total de forma dinâmica.Sendo ideal para trabalha conceitos fundamentais do desenvolvimento frontend moderno, como componentização, estado, props, renderização condicional e organização de projeto.
+Sistema de gerenciamento de produtos desenvolvido com React, Vite, React Router DOM, React-Bootstrap e LocalStorage, permitindo cadastrar produtos, definir preços e quantidades e calcular o orçamento total de forma dinâmica.Sendo ideal para trabalha conceitos fundamentais do desenvolvimento frontend moderno, como componentização, estado, props, renderização condicional e organização de projeto.
 
 # 🚀 Funcionalidades
 - Cadastro, edição e exclusão de produtos
