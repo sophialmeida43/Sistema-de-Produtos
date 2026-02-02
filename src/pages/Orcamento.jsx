@@ -101,7 +101,7 @@ function Orcamento() {
                                             <input
                                                 type="number"
                                                 min="1"
-                                                value={quantidades[item.id]}
+                                                value={quantidades[item.id] ?? item.quantidade}
                                                 onChange={(e) =>
                                                     alterarQuantidade(item.id, e.target.value)
                                                 }
